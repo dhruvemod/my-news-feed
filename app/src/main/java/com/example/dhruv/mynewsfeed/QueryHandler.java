@@ -28,15 +28,15 @@ import java.util.Locale;
  */
 
 public class QueryHandler {
-    static URL createUrl() {
+    static URL createUrl(String sec) {
         String u="https://content.guardianapis.com/search?";
         Uri base = Uri.parse(u);
         Uri.Builder builder = base.buildUpon();
         builder.appendQueryParameter("order-by", "newest");
         builder.appendQueryParameter("show-references", "author");
         builder.appendQueryParameter("show-tags", "contributor");
-        builder.appendQueryParameter("q", "Android");
-        builder.appendQueryParameter("api-key", "test");
+        builder.appendQueryParameter("q", sec);
+        builder.appendQueryParameter("api-key", "7b3160e6-b154-4d65-8061-36f32b896b62");
         String finalUrl = builder.toString();
         URL url = null;
         try {
@@ -151,8 +151,8 @@ public class QueryHandler {
         return list;
     }
 
-    public static List<News> fetchNews() {
-        URL url = createUrl();
+    public static List<News> fetchNews(String sec) {
+        URL url = createUrl(sec);
         String jsonResponse = null;
         try {
             jsonResponse = makeHttpRequest(url);

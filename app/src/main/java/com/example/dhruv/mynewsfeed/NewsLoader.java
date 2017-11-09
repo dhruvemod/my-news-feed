@@ -11,9 +11,11 @@ import java.util.List;
  */
 
 public class NewsLoader extends AsyncTaskLoader<List<News>> {
+    String section;
 
-    public NewsLoader(Context context) {
+    public NewsLoader(Context context,String mSec) {
         super(context);
+        section=mSec;
 
     }
 
@@ -26,9 +28,8 @@ public class NewsLoader extends AsyncTaskLoader<List<News>> {
 
     @Override
     public List<News> loadInBackground() {
-        Log.i("success","loadinback me aya");
 
-        List<News> list=QueryHandler.fetchNews();
+        List<News> list=QueryHandler.fetchNews(section);
         try{
             Log.i("success",String.valueOf(list));
 

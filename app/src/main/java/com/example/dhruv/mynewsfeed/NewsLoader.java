@@ -11,11 +11,11 @@ import java.util.List;
  */
 
 public class NewsLoader extends AsyncTaskLoader<List<News>> {
-    String section;
+    private String section;
 
-    public NewsLoader(Context context,String mSec) {
+    public NewsLoader(Context context, String mSec) {
         super(context);
-        section=mSec;
+        section = mSec;
 
     }
 
@@ -26,7 +26,6 @@ public class NewsLoader extends AsyncTaskLoader<List<News>> {
 
     @Override
     public List<News> loadInBackground() {
-        List<News> list=QueryHandler.fetchNews(section);
-        return list;
+        return QueryHandler.fetchNews(section);
     }
 }

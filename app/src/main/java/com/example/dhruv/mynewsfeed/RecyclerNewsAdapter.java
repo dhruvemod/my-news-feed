@@ -5,7 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -15,7 +17,7 @@ import butterknife.ButterKnife;
 
 public class RecyclerNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
     private List<News> newsList;
-    CustomItemClickListener listener;//for the implementation of onItemClickListener on recyclerViewAdapter
+    private CustomItemClickListener listener;//for the implementation of onItemClickListener on recyclerViewAdapter
 
     public RecyclerNewsAdapter(List<News> list, CustomItemClickListener customItemClickListener) {
         newsList = list;
@@ -49,7 +51,7 @@ public class RecyclerNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemCount() {
-        return null!=newsList?newsList.size():0;
+        return null != newsList ? newsList.size() : 0;
     }
 
     @Override
@@ -68,7 +70,8 @@ public class RecyclerNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         TextView authorTextView;
         @BindView(R.id.date)
         TextView dateView;
-        @BindView(R.id.section) TextView sectionView;
+        @BindView(R.id.section)
+        TextView sectionView;
 
         public MyViewHolder(View itemView) {
             super(itemView);

@@ -29,7 +29,7 @@ import java.util.Locale;
 // class to handle the query, parse the json and return the list
 public class QueryHandler {
     //To build the url using the various query parameters
-    static URL createUrl(String sec) {
+    private static URL createUrl(String sec) {
         String u = "https://content.guardianapis.com/search?";
         Uri base = Uri.parse(u);
         Uri.Builder builder = base.buildUpon();
@@ -52,7 +52,7 @@ public class QueryHandler {
     }
 
     //Formatting the date to our required style from the one retrieved from json
-    static String dateFormat(String preDate) {
+    private static String dateFormat(String preDate) {
         String datePattern = "yyyy-MM-dd'T'HH:mm:ss'Z'";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern, Locale.getDefault());
         try {
@@ -110,6 +110,7 @@ public class QueryHandler {
         }
         return stringBuilder.toString();
     }
+
     //function to extract the required features from the json
     private static List<News> extractFromJson(String json) {
         List<News> list = new ArrayList<>();
@@ -126,7 +127,9 @@ public class QueryHandler {
                 String webTitle = currentObject.getString("webTitle");
                 String sectionName = currentObject.getString("sectionName");
                 String date = currentObject.getString("webPublicationDate");
-                date = dateFormat(date);
+                if (date != null) {
+                    date = dateFormat(date);
+                }
                 String webUrl = currentObject.getString("webUrl");
                 JSONArray tagsArray = currentObject.getJSONArray("tags");
                 String author = "";
@@ -145,8 +148,9 @@ public class QueryHandler {
         }
         return list;
     }
+
     //function to fetch the news and return the list using all of the above functions
-    public static List<News> fetchNews(String sec) {
+    static List<News> fetchNews(String sec) {
         URL url = createUrl(sec);
         String jsonResponse = null;
         try {
@@ -154,8 +158,7 @@ public class QueryHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        List<News> list = extractFromJson(jsonResponse);
-        return list;
+        return extractFromJson(jsonResponse);
     }
 }
 

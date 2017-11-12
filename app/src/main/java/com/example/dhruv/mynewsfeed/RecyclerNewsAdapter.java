@@ -15,7 +15,7 @@ import butterknife.ButterKnife;
 
 public class RecyclerNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
     private List<News> newsList;
-    CustomItemClickListener listener;
+    CustomItemClickListener listener;//for the implementation of onItemClickListener on recyclerViewAdapter
 
     public RecyclerNewsAdapter(List<News> list, CustomItemClickListener customItemClickListener) {
         newsList = list;
@@ -49,7 +49,7 @@ public class RecyclerNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemCount() {
-        return newsList.size();
+        return null!=newsList?newsList.size():0;
     }
 
     @Override

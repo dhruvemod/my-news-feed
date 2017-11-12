@@ -7,11 +7,11 @@ import java.io.Serializable;
  */
 
 public class News implements Serializable{
-    String title;
-    String author;
-    String url;
-    String section;
-    String date;
+    private String title;
+    private String author;
+    private String url;
+    private String section;
+    private String date;
 public News(String title,String author,String url,String section,String date){
     this.title=title;
     this.author=author;

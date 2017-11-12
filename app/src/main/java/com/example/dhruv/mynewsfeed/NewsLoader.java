@@ -22,20 +22,11 @@ public class NewsLoader extends AsyncTaskLoader<List<News>> {
     @Override
     protected void onStartLoading() {
         forceLoad();
-        Log.i("success","loader onstart me aya");
-
     }
 
     @Override
     public List<News> loadInBackground() {
-
         List<News> list=QueryHandler.fetchNews(section);
-        try{
-            Log.i("success",String.valueOf(list));
-
-        }catch (Exception e){
-
-        }
         return list;
     }
 }

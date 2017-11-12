@@ -24,13 +24,14 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import butterknife.BindView;
+
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<News>> {
     private TextView mEmptyTextView;
     private EditText section;
     private Button button;
     private String word;
     private int count;
-    public static final String News_API = "https://content.guardianapis.com/search?";
     public static final String LOG_TAG = MainActivity.class.getName();
     private RecyclerNewsAdapter recyclerNewsAdapter;
     private static final int NEWS_LOADER_ID = 1;
@@ -56,6 +57,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
         final LoaderManager l = getSupportLoaderManager();
+        info = connectivityManager.getActiveNetworkInfo();
+        word = "world";
+        //setting up the button which will search the particular section for the user
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,13 +67,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 mEmptyTextView.setVisibility(View.INVISIBLE);
                 progressBar.setVisibility(View.VISIBLE);
                 urlText = section.getText();
-                word=urlText.toString();
+                word = urlText.toString();
                 //Checking if the EditText returns null or not
                 if (TextUtils.isEmpty(urlText)) {
                     progressBar.setVisibility(View.INVISIBLE);
                     Toast.makeText(MainActivity.this, "Enter section first", Toast.LENGTH_SHORT).show();
                 } else {
                     recyclerView.setVisibility(View.VISIBLE);
+                    Log.i("count check", String.valueOf(count));
                     if (count > 0) {
                         if (info != null && info.isConnectedOrConnecting()) {
                             l.restartLoader(NEWS_LOADER_ID, null, MainActivity.this);
@@ -79,10 +84,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         l.initLoader(NEWS_LOADER_ID, null, MainActivity.this);
                         count++;
                     } else {
-                        if (recyclerNewsAdapter.getItemCount() == 0) {
-                            mEmptyTextView.setVisibility(View.VISIBLE);
+                        if (recyclerNewsAdapter == null && info == null) {
                             progressBar.setVisibility(View.INVISIBLE);
-                            mEmptyTextView.setText("No Active Internet Connection found!");
+                            mEmptyTextView.setVisibility(View.VISIBLE);
+                            mEmptyTextView.setText("No active internet connection found");
+                        } else if (info != null) {
+                            if (recyclerNewsAdapter.getItemCount() == 0) {
+                                mEmptyTextView.setVisibility(View.VISIBLE);
+                                progressBar.setVisibility(View.INVISIBLE);
+                                mEmptyTextView.setText("No Active Internet Connection found!");
+                            }
                         } else {
                             progressBar.setVisibility(View.INVISIBLE);
                             Toast.makeText(MainActivity.this, "No Active Internet Connection found!", Toast.LENGTH_SHORT).show();
@@ -94,12 +105,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     }
 
-    private void updateUI(List<News> bookEv) {
-        recyclerNewsAdapter = new RecyclerNewsAdapter(bookEv, new CustomItemClickListener() {
+    private void updateUI(List<News> newsList) {
+        recyclerNewsAdapter = new RecyclerNewsAdapter(newsList, new CustomItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
                 News b = recyclerNewsAdapter.getItem(position);
-
                 Uri uri = Uri.parse(b.getUrl());
                 Intent webview = new Intent(Intent.ACTION_VIEW, uri);
                 //checking if app available to launch the intent
@@ -108,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
             }
         });
+        //Adding dividers between the two news in the recyclerView
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), llm.getOrientation());
         try {
             recyclerView.addItemDecoration(dividerItemDecoration);
@@ -118,18 +129,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<List<News>> onCreateLoader(int id, Bundle args) {
-        return new NewsLoader(this,word);
+        return new NewsLoader(this, word);
     }
 
     @Override
     public void onLoadFinished(Loader<List<News>> loader, List<News> data) {
         progressBar.setVisibility(View.INVISIBLE);
         try {
-            //removing any pre existing data on the adapter
+            //updating the UI
             updateUI(data);
         } catch (Exception e) {
         }
-        //in case of no books available
+        //in case of no news available
         if (info == null) {
             mEmptyTextView.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.INVISIBLE);
@@ -145,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(Loader<List<News>> loader) {
-        count=0;
+        count = 0;
         try {
             if (recyclerNewsAdapter != null) {
             }
@@ -155,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     protected void onDestroy() {
-        count=0;
+        count = 0;
         getLoaderManager().destroyLoader(NEWS_LOADER_ID);
         super.onDestroy();
     }

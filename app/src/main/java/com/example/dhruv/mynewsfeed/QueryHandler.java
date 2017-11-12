@@ -26,10 +26,11 @@ import java.util.Locale;
 /**
  * Created by dhruv on 11/8/2017.
  */
-
+// class to handle the query, parse the json and return the list
 public class QueryHandler {
+    //To build the url using the various query parameters
     static URL createUrl(String sec) {
-        String u="https://content.guardianapis.com/search?";
+        String u = "https://content.guardianapis.com/search?";
         Uri base = Uri.parse(u);
         Uri.Builder builder = base.buildUpon();
         builder.appendQueryParameter("order-by", "newest");
@@ -45,11 +46,12 @@ public class QueryHandler {
             e.printStackTrace();
             return null;
         }
-        Log.i("url",String.valueOf(url));
+        Log.i("url", String.valueOf(url));
 
         return url;
     }
 
+    //Formatting the date to our required style from the one retrieved from json
     static String dateFormat(String preDate) {
         String datePattern = "yyyy-MM-dd'T'HH:mm:ss'Z'";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern, Locale.getDefault());
@@ -89,7 +91,6 @@ public class QueryHandler {
                 inputStream.close();
             }
         }
-        Log.i("json received",json);
         return json;
     }
 
@@ -107,10 +108,9 @@ public class QueryHandler {
                 line = bufferedReader.readLine();
             }
         }
-
         return stringBuilder.toString();
     }
-
+    //function to extract the required features from the json
     private static List<News> extractFromJson(String json) {
         List<News> list = new ArrayList<>();
         if (TextUtils.isEmpty(json)) {
@@ -120,10 +120,6 @@ public class QueryHandler {
             JSONArray results = new JSONArray();
             JSONObject base = new JSONObject(json);
             JSONObject responseObject = base.getJSONObject("response");
-           /* if (base.has("results")) {
-                Log.i("check","extract me aya hai");
-
-            }*/
             results = responseObject.getJSONArray("results");
             for (int i = 0; i < results.length(); i++) {
                 JSONObject currentObject = results.getJSONObject(i);
@@ -147,10 +143,9 @@ public class QueryHandler {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.i("list check",String.valueOf(list));
         return list;
     }
-
+    //function to fetch the news and return the list using all of the above functions
     public static List<News> fetchNews(String sec) {
         URL url = createUrl(sec);
         String jsonResponse = null;
